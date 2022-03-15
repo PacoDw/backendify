@@ -1,5 +1,64 @@
 # Backendify
 
+There are some requisites to run the application
+- [Go](https://golang.org/doc/install) 1.17 
+- [Make](https://www.gnu.org/software/make/)
+
+# Lint the Challenge
+* The command to lint a specific package is the following:
+  ```bash
+    $ make lint pkg=routes
+  ```
+
+* Hovewer,  if you want to lint all packages, then run:
+  ```bash
+    $ make lint
+  ```
+
+# Test the Challenge
+
+There are some commands to run, and test the challenges:
+
+* If you want to test a particular test case then use the following example:
+  ```bash
+    $ make test pkg=./routes name=TestCompanyRoute_WithWrongLegacyHeaders | tee log.json
+  ```
+  Note~> you can see the `test` command is the main of this and then the `pkg` tells what package it would be tested, and finally the name of the test case. If you want to save the test result you can add the pipe and the file name as the above example.
+
+* If you want to run all test cases just run the following command:
+  ```bash
+    $ make test | tee log.json
+  ```
+
+# Build and Run
+* To build the project with docker you can use the following command:
+  ```bash
+    $ make docker-build service=backendify version=v1.0.0-test
+  ```
+  Note~>: if you have some problems with dependencies into the docker and it needs the `go mod tidy` command or anyone else to fix you can use can add the flag `go_commands` to add these golang commands:
+
+  ```bash
+    $ make docker-build service=backendify version=v1.0.0-test go_commands="go mod tidy"
+  ```
+
+* To run an image you can use the following example:
+  ```bash
+    $ make docker-run service=backendify args=-d version=v1.0.0-test params="ru=http://localhost:9001 us=http://localhost:9002"
+  ```
+
+  Note~>: you can avoid using the `args=-d` command if you dont want to pass docker commands
+
+* Sometimes you would like to use only one command to build and run at the same time, in this case use the following one:
+
+  ```bash
+    $ make docker-bnr service=backendify args=-d version=v1.0.0-test params="ru=http://localhost:9001 us=http://localhost:9002"
+  ```
+  Note~>: you can use `go_commands` command and avoid `args=` if you want.
+
+
+
+# Challenge Description
+
 Hey there, and welcome to the challenge!
 
 At Backendify, our goal is to make our customer's lives easier. No one has to deal with the complexity of having multiple providers for the same kind of data!
@@ -28,7 +87,7 @@ Your application must implement just two endpoints:
 
 1. `GET /status`.  This API endpoint must return an HTTP 200/OK when your solution is ready to accept requests. The load balancer will use that endpoint to monitor your solution in production.
 
-2. `GET /company?id=XX&country_iso=YY`. This API endpoint receives the parameters id and country_iso. `id` can be a string without any particular limitation. `country_iso` will be a two-letter country code to select the backend according to the application configuration. Your solution must query the backend in a proper country and return:
+2. `GET /company?id=XX&countyIso=YY`. This API endpoint receives the parameters id and countyIso. `id` can be a string without any particular limitation. `countyIso` will be a two-letter country code to select the backend according to the application configuration. Your solution must query the backend in a proper country and return:
     - An HTTP 200/OK reply when the company with the requested id exists on the corresponding backend. The body should be a JSON object with the company data returned by a backend.
     - An HTTP 404/Not Found reply if the company with the requested id does not exist on the corresponding backend.
 
