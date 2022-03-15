@@ -1,22 +1,29 @@
 ---
 stages:
+- test
 - build
 - release
 - canary
 
+test:
+  stage: test
+  script:
+    - make lint
+    - make test
+
 ###################################################
-## uncomment this section to build your binary
-## if needed
-# build:
-#   stage: build
-#   image: # Add an image to build your service
-#   artifacts:
-#     paths:
-#       # pass my-app binary to the next stage
-#       # to include it in the Docker image
-#       - my-app
-#   script:
-#     - command to build my-app
+# uncomment this section to build your binary
+# if needed
+build:
+  stage: build
+  image: backendify:latest # Add an image to build your service
+  artifacts:
+    paths:
+      # pass my-app binary to the next stage
+      # to include it in the Docker image
+      - backendify
+  script:
+    - make docker-build service=backendify version=latest
 ###################################################
 
 ###################################################
